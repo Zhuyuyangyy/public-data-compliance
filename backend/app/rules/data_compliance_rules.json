@@ -1,0 +1,107 @@
+{
+  "rules": [
+    {
+      "rule_id": "RULE_D_001",
+      "rule_type": "privacy",
+      "description": "涉及个人信息（需脱敏）",
+      "severity": "high",
+      "penalty": 25,
+      "enabled": true,
+      "keywords": ["姓名", "手机", "邮箱", "身份证", "地址", "出生日期"]
+    },
+    {
+      "rule_id": "RULE_D_002",
+      "rule_type": "privacy",
+      "description": "涉及敏感个人信息（需审批）",
+      "severity": "high",
+      "penalty": 30,
+      "enabled": true,
+      "keywords": ["健康", "医疗", "疾病", "宗教", "政治", "犯罪", "征信", "基因", "人脸", "位置"]
+    },
+    {
+      "rule_id": "RULE_D_003",
+      "rule_type": "authorization",
+      "description": "超出授权范围使用",
+      "severity": "high",
+      "penalty": 35,
+      "enabled": true
+    },
+    {
+      "rule_id": "RULE_D_004",
+      "rule_type": "authorization",
+      "description": "跨部门共享未取得授权",
+      "severity": "medium",
+      "penalty": 20,
+      "enabled": true
+    },
+    {
+      "rule_id": "RULE_D_005",
+      "rule_type": "reid",
+      "description": "数据产品存在再识别风险",
+      "severity": "high",
+      "penalty": 30,
+      "enabled": true,
+      "combinations": [
+        ["性别", "年龄"],
+        ["地区", "职业"],
+        ["时间", "位置"],
+        ["年龄", "收入"]
+      ]
+    },
+    {
+      "rule_id": "RULE_D_006",
+      "rule_type": "authorization",
+      "description": "数据运营机构越权开发",
+      "severity": "high",
+      "penalty": 35,
+      "enabled": true,
+      "unauthorized_keywords": ["商业销售", "广告推送", "个人信息交易", "数据贩卖"]
+    },
+    {
+      "rule_id": "RULE_D_007",
+      "rule_type": "privacy",
+      "description": "匿名化不充分",
+      "severity": "medium",
+      "penalty": 20,
+      "enabled": true
+    },
+    {
+      "rule_id": "RULE_D_008",
+      "rule_type": "data_type",
+      "description": "数据类型识别异常",
+      "severity": "medium",
+      "penalty": 15,
+      "enabled": true
+    },
+    {
+      "rule_id": "RULE_D_009",
+      "rule_type": "lineage",
+      "description": "数据血缘链路不完整",
+      "severity": "low",
+      "penalty": 10,
+      "enabled": true
+    },
+    {
+      "rule_id": "RULE_D_010",
+      "rule_type": "lineage",
+      "description": "数据加工过程未记录",
+      "severity": "medium",
+      "penalty": 15,
+      "enabled": true
+    }
+  ],
+  "risk_thresholds": {
+    "extreme": 80,
+    "high": 60,
+    "medium": 40,
+    "low": 0
+  },
+  "coupling_coefficients": {
+    "privacy_reid": 0.8,
+    "open_privacy": 0.6,
+    "auth_privacy": 0.5,
+    "open_reid": 0.7
+  },
+  "version": "1.0",
+  "last_updated": "2024-01-01"
+}
