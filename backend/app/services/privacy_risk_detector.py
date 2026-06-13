@@ -123,7 +123,7 @@ class PrivacyRiskDetector:
                     break
         
         # 检测再识别风险
-        reid_risk = self._detect_reid_risk(field_names, detected_personal, detected_sensitive)
+        reid_risk = self._detect_reid_risk(field_names, detected_personal, detected_sensitive, detected_anonymized)
         result["reid_risk_fields"] = reid_risk
         
         # 生成问题列表
@@ -135,35 +135,38 @@ class PrivacyRiskDetector:
         
         return result
     
-    def _detect_reid_risk(self, field_names: List[str], 
-                         personal: set, sensitive: set) -> List[str]:
+    def _detect_reid_risk(self, field_names: List[str],
+                         personal: set, sensitive: set,
+                         anonymized: set = None) -> List[str]:
         """
         检测再识别风险
         检查字段组合是否可能用于重识别
         """
+        if anonymized is None:
+            anonymized = set()
         reid_risk = []
-        
+
         for f1, f2 in REID_COMBINATIONS:
             # 检查是否存在危险组合
             has_f1 = any(f1 in fn or fn in f1 for fn in field_names)
             has_f2 = any(f2 in fn or fn in f2 for fn in field_names)
-            
+
             if has_f1 and has_f2:
                 # 检查是否已经脱敏
                 f1_masked = any(f1 in fn and any(kw in fn.lower() for kw in ["mask", "anon", "hash"])
                                for fn in field_names)
                 f2_masked = any(f2 in fn and any(kw in fn.lower() for kw in ["mask", "anon", "hash"])
                                for fn in field_names)
-                
+
                 if not (f1_masked or f2_masked):
                     reid_risk.append(f"{f1}+{f2}组合")
-        
+
         # 检查唯一标识符
         for name in field_names:
             if any(kw in name.lower() for kw in ["id", "编号", "编码", "identifier"]):
-                if name not in detected_anonymized:
+                if name not in anonymized:
                     reid_risk.append(name)
-        
+
         return reid_risk
     
     def _generate_issues(self, result: Dict, personal: set, sensitive: set,
